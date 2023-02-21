@@ -1,56 +1,41 @@
-import Compositor from './compositor.js';
 import Timer from './timer.js';
 import { loadLevel } from './loaders.js';
 import { createMario } from './entities.js';
-import { loadBackgroundSprites } from './sprites.js';
-import { createBackgroundLayer, createSpriteLayer } from './layers.js';
 
 import KeyboardState from './KeyboardState.js';
 
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
 
-Promise.all([createMario(), loadBackgroundSprites(), loadLevel('1-1')]).then(
-  ([mario, backgroundSprites, level]) => {
-    const compositor = new Compositor();
+Promise.all([createMario(), loadLevel('1-1')]).then(([mario, level]) => {
+  const timer = new Timer(1 / 60);
 
-    const backgroundLayer = createBackgroundLayer(
-      level.backgrounds,
-      backgroundSprites
-    );
+  const gravity = 2000;
 
-    const spriteLayer = createSpriteLayer(mario);
+  mario.pos.set(64, 64);
 
-    compositor.layers.push(backgroundLayer);
-    compositor.layers.push(spriteLayer);
+  level.entities.add(mario);
 
-    const timer = new Timer(1 / 60);
+  const SPACE = 32;
+  const input = new KeyboardState();
 
-    const gravity = 2000;
+  input.addMapping(SPACE, (keyState) => {
+    if (keyState) {
+      mario.jump.start();
+    } else {
+      mario.jump.cancel();
+    }
+  });
 
-    mario.pos.set(64, 180);
+  input.listenTo(window);
 
-    const SPACE = 32;
-    const input = new KeyboardState();
+  timer.update = function update(deltaTime) {
+    level.update(deltaTime);
 
-    input.addMapping(SPACE, (keyState) => {
-      if (keyState) {
-        mario.jump.start();
-      } else {
-        mario.jump.cancel();
-      }
-    });
+    level.compositor.draw(context);
 
-    input.listenTo(window);
+    mario.vel.y += gravity * deltaTime;
+  };
 
-    timer.update = function update(deltaTime) {
-      mario.update(deltaTime);
-
-      compositor.draw(context);
-
-      mario.vel.y += gravity * deltaTime;
-    };
-
-    timer.start();
-  }
-);
+  timer.start();
+});
