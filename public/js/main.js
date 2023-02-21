@@ -9,6 +9,8 @@ import { setupDebugLayers, setupDebugControls } from './debug.js';
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
 
+const DEBUG_MODE = true;
+
 Promise.all([createMario(), loadLevel('1-1')]).then(([mario, level]) => {
   const camera = new Camera();
 
@@ -18,8 +20,10 @@ Promise.all([createMario(), loadLevel('1-1')]).then(([mario, level]) => {
   const input = setupKeyboard(mario);
   input.listenTo(window);
 
-  setupDebugLayers(level, camera);
-  setupDebugControls(canvas, mario, camera);
+  if (DEBUG_MODE) {
+    setupDebugLayers(level, camera);
+    setupDebugControls(canvas, mario, camera);
+  }
 
   const timer = new Timer(1 / 60);
 
