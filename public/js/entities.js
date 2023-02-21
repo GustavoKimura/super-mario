@@ -17,6 +17,10 @@ export async function createMario() {
   const runAnimation = createAnimation(['run-1', 'run-2', 'run-3'], 10);
 
   function routeFrame(mario) {
+    if (mario.jump.falling) {
+      return 'jump';
+    }
+
     if (mario.go.distance > 0) {
       if (
         (mario.vel.x > 0 && mario.go.dir < 0) ||
