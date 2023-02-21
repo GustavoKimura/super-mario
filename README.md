@@ -1,6 +1,9 @@
 # super-mario
 Super Mario Bros. game, made with Javascript canvas element.
 
+Project running on GitHub pages:
+https://gustavokimura.github.io/super-mario/public/
+
 1. Download and install [NodeJS LTS](https://nodejs.org/en/) version.
 
 2. Download the project, and open terminal on it.
