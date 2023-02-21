@@ -7,6 +7,9 @@ export function setupKeyboard(entity) {
   const LEFT = 'KeyA';
   const RIGHT = 'KeyD';
 
+  const DIRECTION_INCREASE = 1;
+  const DIRECTION_DECREASE = -1;
+
   input.addMapping(JUMP, (keyState) => {
     if (keyState) {
       entity.jump.start();
@@ -16,11 +19,15 @@ export function setupKeyboard(entity) {
   });
 
   input.addMapping(LEFT, (keyState) => {
-    entity.go.dir = -keyState;
+    const directionBalance = keyState ? DIRECTION_DECREASE : DIRECTION_INCREASE;
+
+    entity.go.dir += directionBalance;
   });
 
   input.addMapping(RIGHT, (keyState) => {
-    entity.go.dir = keyState;
+    const directionBalance = keyState ? DIRECTION_INCREASE : DIRECTION_DECREASE;
+
+    entity.go.dir += directionBalance;
   });
 
   return input;
