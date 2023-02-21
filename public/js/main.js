@@ -9,7 +9,7 @@ import { setupDebugLayers, setupDebugControls } from './debug.js';
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
 
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 
 Promise.all([createMario(), loadLevel('1-1')]).then(([mario, level]) => {
   const camera = new Camera();
