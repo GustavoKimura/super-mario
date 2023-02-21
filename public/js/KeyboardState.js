@@ -35,7 +35,53 @@ export default class KeyboardState {
     this.keyMap.get(code)(keyState);
   }
 
-  listenTo(window) {
+  listenTo(window, left, right, run, jump) {
+    ['mousedown', 'mouseup', 'touchstart', 'touchend'].forEach((eventName) => {
+      left.addEventListener(eventName, (event) => {
+        this.handleEvent({
+          code: 'KeyA',
+          type:
+            event.type === 'mousedown' || event.type === 'touchstart'
+              ? 'keydown'
+              : 'keyup',
+          preventDefault: () => event.preventDefault,
+        });
+      });
+
+      right.addEventListener(eventName, (event) => {
+        this.handleEvent({
+          code: 'KeyD',
+          type:
+            event.type === 'mousedown' || event.type === 'touchstart'
+              ? 'keydown'
+              : 'keyup',
+          preventDefault: () => event.preventDefault,
+        });
+      });
+
+      run.addEventListener(eventName, (event) => {
+        this.handleEvent({
+          code: 'KeyZ',
+          type:
+            event.type === 'mousedown' || event.type === 'touchstart'
+              ? 'keydown'
+              : 'keyup',
+          preventDefault: () => event.preventDefault,
+        });
+      });
+
+      jump.addEventListener(eventName, (event) => {
+        this.handleEvent({
+          code: 'KeyW',
+          type:
+            event.type === 'mousedown' || event.type === 'touchstart'
+              ? 'keydown'
+              : 'keyup',
+          preventDefault: () => event.preventDefault,
+        });
+      });
+    });
+
     ['keydown', 'keyup'].forEach((eventName) => {
       window.addEventListener(eventName, (event) => {
         this.handleEvent(event);

@@ -9,6 +9,11 @@ import { setupDebugLayers, setupDebugControls } from './debug.js';
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
 
+const left = document.getElementById('left');
+const right = document.getElementById('right');
+const run = document.getElementById('run');
+const jump = document.getElementById('jump');
+
 const DEBUG_MODE = false;
 
 Promise.all([createMario(), loadLevel('1-1')]).then(([mario, level]) => {
@@ -18,7 +23,7 @@ Promise.all([createMario(), loadLevel('1-1')]).then(([mario, level]) => {
   level.entities.add(mario);
 
   const input = setupKeyboard(mario);
-  input.listenTo(window);
+  input.listenTo(window, left, right, run, jump);
 
   if (DEBUG_MODE) {
     setupDebugLayers(level, camera);
