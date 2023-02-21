@@ -1,9 +1,10 @@
 import KeyboardState from './KeyboardState.js';
 
-export function setupKeyboard(entity) {
+export function setupKeyboard(mario) {
   const input = new KeyboardState();
 
   const JUMP = 'KeyW';
+  const RUN = 'KeyZ';
   const LEFT = 'KeyA';
   const RIGHT = 'KeyD';
 
@@ -12,22 +13,26 @@ export function setupKeyboard(entity) {
 
   input.addMapping(JUMP, (keyState) => {
     if (keyState) {
-      entity.jump.start();
+      mario.jump.start();
     } else {
-      entity.jump.cancel();
+      mario.jump.cancel();
     }
+  });
+
+  input.addMapping(RUN, (keyState) => {
+    mario.turbo(keyState);
   });
 
   input.addMapping(LEFT, (keyState) => {
     const directionBalance = keyState ? DIRECTION_DECREASE : DIRECTION_INCREASE;
 
-    entity.go.dir += directionBalance;
+    mario.go.dir += directionBalance;
   });
 
   input.addMapping(RIGHT, (keyState) => {
     const directionBalance = keyState ? DIRECTION_INCREASE : DIRECTION_DECREASE;
 
-    entity.go.dir += directionBalance;
+    mario.go.dir += directionBalance;
   });
 
   return input;
