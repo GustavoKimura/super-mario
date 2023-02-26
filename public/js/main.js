@@ -1,9 +1,8 @@
 import Camera from './Camera.js';
 import Timer from './Timer.js';
 import { loadLevel } from './loaders/level.js';
-import { createMario } from './entities.js';
+import { loadEntities } from './entities.js';
 import { setupKeyboard, setupButtons } from './input.js';
-
 import { setupDebugLayers, setupDebugControls } from './debug.js';
 
 const canvas = document.getElementById('screen');
@@ -38,13 +37,22 @@ const BUTTON_CONTROLS = {
   JUMP: JUMP_BUTTON,
 };
 
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 
-Promise.all([createMario(), loadLevel('1-1')]).then(([mario, level]) => {
+Promise.all([loadEntities(), loadLevel('1-1')]).then(([entity, level]) => {
   const camera = new Camera();
 
+  const mario = entity.mario();
+  const goomba = entity.goomba();
+  const koopa = entity.koopa();
+
   mario.pos.set(64, 64);
+  goomba.pos.set(240, 64);
+  koopa.pos.set(260, 64);
+
   level.entities.add(mario);
+  level.entities.add(goomba);
+  level.entities.add(koopa);
 
   setupKeyboard(mario, KEYBOARD_CONTROLS).listenTo(window);
   setupButtons(mario, BUTTON_CONTROLS).listenTo(left, right, run, jump);
