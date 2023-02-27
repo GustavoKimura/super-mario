@@ -1,11 +1,25 @@
 import Camera from './Camera.js';
 import Timer from './Timer.js';
+import Entity from './Entity.js';
+import PlayerController from './traits/PlayerController.js';
 import { createLevelLoader } from './loaders/level.js';
 import { loadEntities } from './entities.js';
 import { setupKeyboard, setupButtons } from './input.js';
 import { setupDebugLayers, setupDebugControls } from './debug.js';
 
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
+
+function createPlayerEnvironment(playerEntity) {
+  const playerEnvironment = new Entity();
+  const playerController = new PlayerController();
+
+  playerController.checkpoint.set(64, 64);
+  playerController.setPlayer(playerEntity);
+
+  playerEnvironment.addTrait(playerController);
+
+  return playerEnvironment;
+}
 
 async function main(canvas) {
   const context = canvas.getContext('2d');
@@ -19,9 +33,9 @@ async function main(canvas) {
   const camera = new Camera();
 
   const mario = entityFactory.mario();
-  mario.pos.set(64, 64);
+  const playerEnvironment = createPlayerEnvironment(mario);
 
-  level.entities.add(mario);
+  level.entities.add(playerEnvironment);
 
   setupKeyboard(mario);
   setupButtons(mario);
@@ -36,9 +50,7 @@ async function main(canvas) {
   timer.update = function update(deltaTime) {
     level.update(deltaTime);
 
-    if (mario.pos.x > 100) {
-      camera.pos.x = mario.pos.x - 100;
-    }
+    camera.pos.x = Math.max(0, mario.pos.x - 100);
 
     level.compositor.draw(context, camera);
   };
