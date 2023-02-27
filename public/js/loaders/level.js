@@ -3,15 +3,7 @@ import { Matrix } from '../math.js';
 import { createBackgroundLayer, createSpriteLayer } from '../layers.js';
 import { loadJSON, loadSpriteSheet } from '../loaders.js';
 
-export async function loadLevel(name) {
-  const levelSpecification = await loadJSON(`./levels/${name}.json`);
-
-  const backgroundSprites = await loadSpriteSheet(
-    levelSpecification.spriteSheet
-  );
-
-  const level = new Level();
-
+function setupCollision(levelSpecification, level) {
   const mergedTiles = levelSpecification.layers.flatMap(
     (layerSpecification) => layerSpecification.tiles
   );
@@ -22,7 +14,9 @@ export async function loadLevel(name) {
   );
 
   level.setCollisionGrid(collisionGrid);
+}
 
+function setupBackgrounds(levelSpecification, level, backgroundSprites) {
   levelSpecification.layers.forEach((layer) => {
     const backgroundGrid = createBackgroundGrid(
       layer.tiles,
@@ -37,11 +31,43 @@ export async function loadLevel(name) {
 
     level.compositor.layers.push(backgroundLayer);
   });
+}
+
+function setupEntities(levelSpecification, level, entityFactory) {
+  levelSpecification.entities.forEach(({ name, pos: [x, y] }) => {
+    const createEntity = entityFactory[name];
+
+    const entity = createEntity();
+    entity.pos.set(x, y);
+
+    level.entities.add(entity);
+  });
 
   const spriteLayer = createSpriteLayer(level.entities);
+
   level.compositor.layers.push(spriteLayer);
+}
+
+function setupLevel(levelSpecification, backgroundSprites, entityFactory) {
+  const level = new Level();
+
+  setupCollision(levelSpecification, level);
+  setupBackgrounds(levelSpecification, level, backgroundSprites);
+  setupEntities(levelSpecification, level, entityFactory);
 
   return level;
+}
+
+export function createLevelLoader(entityFactory) {
+  return async function loadLevel(name) {
+    const levelSpecification = await loadJSON(`./levels/${name}.json`);
+
+    const backgroundSprites = await loadSpriteSheet(
+      levelSpecification.spriteSheet
+    );
+
+    return setupLevel(levelSpecification, backgroundSprites, entityFactory);
+  };
 }
 
 function createCollisionGrid(tiles, patterns) {
@@ -93,16 +119,12 @@ function expandRange(range) {
 
 function* expandRanges(ranges) {
   for (const range of ranges) {
-    for (const item of expandRange(range)) {
-      yield item;
-    }
+    yield* expandRange(range);
   }
 }
 
-function expandTiles(tiles, patterns) {
-  const expandedTiles = [];
-
-  function walkTiles(tiles, offsetX, offsetY) {
+function* expandTiles(tiles, patterns) {
+  function* walkTiles(tiles, offsetX, offsetY) {
     for (const tile of tiles) {
       for (const { x, y } of expandRanges(tile.ranges)) {
         const derivedX = x + offsetX;
@@ -111,15 +133,13 @@ function expandTiles(tiles, patterns) {
         if (tile.pattern) {
           const tiles = patterns[tile.pattern].tiles;
 
-          walkTiles(tiles, derivedX, derivedY);
+          yield* walkTiles(tiles, derivedX, derivedY);
         } else {
-          expandedTiles.push({ tile, x: derivedX, y: derivedY });
+          yield { tile, x: derivedX, y: derivedY };
         }
       }
     }
   }
 
-  walkTiles(tiles, 0, 0);
-
-  return expandedTiles;
+  yield* walkTiles(tiles, 0, 0);
 }

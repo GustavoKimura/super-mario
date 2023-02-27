@@ -35,18 +35,43 @@ function mapControls(mario, input, controls) {
   return input;
 }
 
-export function setupKeyboard(mario, keyboardControls) {
+export function setupKeyboard(mario) {
+  const LEFT_KEY = 'KeyA';
+  const RIGHT_KEY = 'KeyD';
+  const RUN_KEY = 'KeyZ';
+  const JUMP_KEY = 'KeyW';
+
   const input = new KeyboardState();
 
-  mapControls(mario, input, keyboardControls);
+  mapControls(mario, input, {
+    LEFT: LEFT_KEY,
+    RIGHT: RIGHT_KEY,
+    RUN: RUN_KEY,
+    JUMP: JUMP_KEY,
+  });
 
-  return input;
+  input.listenTo(window);
 }
 
-export function setupButtons(mario, buttonsControls) {
+export function setupButtons(mario) {
+  const leftButton = document.getElementById('left');
+  const rightButton = document.getElementById('right');
+  const runButton = document.getElementById('run');
+  const jumpButton = document.getElementById('jump');
+
+  const { id: LEFT_BUTTON } = leftButton;
+  const { id: RIGHT_BUTTON } = rightButton;
+  const { id: RUN_BUTTON } = runButton;
+  const { id: JUMP_BUTTON } = jumpButton;
+
   const input = new ButtonsState();
 
-  mapControls(mario, input, buttonsControls);
+  mapControls(mario, input, {
+    LEFT: LEFT_BUTTON,
+    RIGHT: RIGHT_BUTTON,
+    RUN: RUN_BUTTON,
+    JUMP: JUMP_BUTTON,
+  });
 
-  return input;
+  input.listenTo(leftButton, rightButton, runButton, jumpButton);
 }
