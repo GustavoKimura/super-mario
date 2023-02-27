@@ -54,6 +54,9 @@ export function setupKeyboard(mario) {
 }
 
 export function setupButtons(mario) {
+  const buttons = document.getElementById('buttons');
+  buttons.style.display = 'flex';
+
   const leftButton = document.getElementById('left');
   const rightButton = document.getElementById('right');
   const runButton = document.getElementById('run');

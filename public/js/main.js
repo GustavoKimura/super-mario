@@ -7,6 +7,8 @@ import { loadEntities } from './entities.js';
 import { setupKeyboard, setupButtons } from './input.js';
 import { setupDebugLayers, setupDebugControls } from './debug.js';
 
+const SHOW_BUTTON_CONTROLLERS = false;
+
 const DEBUG_MODE = false;
 
 function createPlayerEnvironment(playerEntity) {
@@ -38,7 +40,10 @@ async function main(canvas) {
   level.entities.add(playerEnvironment);
 
   setupKeyboard(mario);
-  setupButtons(mario);
+
+  if (SHOW_BUTTON_CONTROLLERS) {
+    setupButtons(mario);
+  }
 
   if (DEBUG_MODE) {
     setupDebugLayers(level, camera);

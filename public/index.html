@@ -2,6 +2,20 @@
 <html>
   <head>
     <title>Super Mario</title>
+
+    <style>
+      body {
+        background: black;
+        margin: 0;
+      }
+
+      #screen {
+        display: block;
+        image-rendering: pixelated;
+        height: 100vh;
+        margin: auto;
+      }
+    </style>
   </head>
 
   <body>
@@ -9,7 +23,10 @@
 
     <br />
 
-    <div style="display: flex; justify-content: space-between; width: 30%">
+    <div
+      id="buttons"
+      style="display: none; justify-content: space-between; width: 30%"
+    >
       <button id="left"><</button>
       <button id="right">></button>
       <button id="run">Corre</button>
