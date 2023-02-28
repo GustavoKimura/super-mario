@@ -3,13 +3,15 @@ import Timer from './Timer.js';
 import Entity from './Entity.js';
 import PlayerController from './traits/PlayerController.js';
 import { createLevelLoader } from './loaders/level.js';
+import { loadFont } from './loaders/font.js';
 import { loadEntities } from './entities.js';
 import { setupKeyboard, setupButtons } from './input.js';
 import { setupDebugLayers, setupDebugControls } from './debug.js';
+import { createDashboardLayer } from './layers/dashboard.js';
 
 const SHOW_BUTTON_CONTROLLERS = false;
 
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 
 function createPlayerEnvironment(playerEntity) {
   const playerEnvironment = new Entity();
@@ -26,7 +28,7 @@ function createPlayerEnvironment(playerEntity) {
 async function main(canvas) {
   const context = canvas.getContext('2d');
 
-  const entityFactory = await loadEntities();
+  const [entityFactory, font] = await Promise.all([loadEntities(), loadFont()]);
 
   const loadLevel = createLevelLoader(entityFactory);
 
@@ -49,6 +51,8 @@ async function main(canvas) {
     setupDebugLayers(level, camera);
     setupDebugControls(canvas, mario, camera);
   }
+
+  level.compositor.layers.push(createDashboardLayer(font, playerEnvironment));
 
   const timer = new Timer(1 / 60);
 
