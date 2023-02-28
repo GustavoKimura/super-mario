@@ -2,7 +2,7 @@ import { loadMario } from './entities/Mario.js';
 import { loadGoomba } from './entities/Goomba.js';
 import { loadKoopa } from './entities/Koopa.js';
 
-export async function loadEntities() {
+export async function loadEntities(audioContext) {
   const entityFactories = {};
 
   function addAs(name) {
@@ -10,9 +10,9 @@ export async function loadEntities() {
   }
 
   await Promise.all([
-    loadMario().then(addAs('mario')),
-    loadGoomba().then(addAs('goomba')),
-    loadKoopa().then(addAs('koopa')),
+    loadMario(audioContext).then(addAs('mario')),
+    loadGoomba(audioContext).then(addAs('goomba')),
+    loadKoopa(audioContext).then(addAs('koopa')),
   ]);
 
   return entityFactories;
