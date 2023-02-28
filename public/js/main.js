@@ -9,7 +9,7 @@ import { setupDebugLayers, setupDebugControls } from './debug.js';
 
 const SHOW_BUTTON_CONTROLLERS = false;
 
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 
 function createPlayerEnvironment(playerEntity) {
   const playerEnvironment = new Entity();

@@ -1,4 +1,5 @@
-import { createCollisionLayer, createCameraLayer } from './layers.js';
+import { createCollisionLayer } from './layers/collision.js';
+import { createCameraLayer } from './layers/camera.js';
 
 export function setupDebugLayers(level, camera) {
   level.compositor.layers.push(
