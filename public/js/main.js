@@ -3,6 +3,7 @@ import Timer from './Timer.js';
 import Entity from './Entity.js';
 import PlayerController from './traits/PlayerController.js';
 import { createLevelLoader } from './loaders/level.js';
+import { createAudioLoader } from './loaders/audio.js';
 import { loadFont } from './loaders/font.js';
 import { loadEntities } from './entities.js';
 import { setupKeyboard, setupButtons } from './input.js';
@@ -25,10 +26,39 @@ function createPlayerEnvironment(playerEntity) {
   return playerEnvironment;
 }
 
+class AudioBoard {
+  constructor(context) {
+    this.context = context;
+
+    this.buffers = new Map();
+  }
+
+  addAudio(name, buffer) {
+    this.buffers.set(name, buffer);
+  }
+
+  playAudio(name) {
+    const source = this.context.createBufferSource();
+
+    source.connect(this.context.destination);
+    source.buffer = this.buffers.get(name);
+
+    source.start(0);
+  }
+}
+
 async function main(canvas) {
   const context = canvas.getContext('2d');
 
   const [entityFactory, font] = await Promise.all([loadEntities(), loadFont()]);
+
+  const audioContext = new AudioContext();
+  const audioBoard = new AudioBoard(audioContext);
+  const loadAudio = createAudioLoader(audioContext);
+
+  loadAudio('./audio/jump.ogg').then((buffer) => {
+    audioBoard.addAudio('jump', buffer);
+  });
 
   const loadLevel = createLevelLoader(entityFactory);
 
@@ -54,10 +84,17 @@ async function main(canvas) {
 
   level.compositor.layers.push(createDashboardLayer(font, playerEnvironment));
 
+  const gameContext = {
+    audioBoard,
+    deltaTime: null,
+  };
+
   const timer = new Timer(1 / 60);
 
   timer.update = function update(deltaTime) {
-    level.update(deltaTime);
+    gameContext.deltaTime = deltaTime;
+
+    level.update(gameContext);
 
     camera.pos.x = Math.max(0, mario.pos.x - 100);
 
@@ -69,4 +106,10 @@ async function main(canvas) {
 
 const canvas = document.getElementById('screen');
 
-main(canvas);
+const start = () => {
+  window.removeEventListener('click', start);
+
+  main(canvas);
+};
+
+window.addEventListener('click', start);
