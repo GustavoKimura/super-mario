@@ -1,7 +1,7 @@
 import { Vec2 } from './math.js';
 import AudioBoard from './AudioBoard.js';
 import BoundingBox from './BoundingBox.js';
-import EventEmitter from './EventEmitter.js';
+import EventBuffer from './EventBuffer.js';
 
 export const Sides = {
   TOP: Symbol('top'),
@@ -11,22 +11,30 @@ export const Sides = {
 };
 
 export class Trait {
+  static EVENT_TASK = Symbol('task');
+
   constructor(name) {
     this.name = name;
 
-    this.events = new EventEmitter();
-
-    this.tasks = [];
+    this.listeners = [];
   }
 
-  finalize() {
-    this.tasks.forEach((task) => task());
+  listen(name, callback, count = Infinity) {
+    const listener = { name, callback, count };
 
-    this.tasks = [];
+    this.listeners.push(listener);
+  }
+
+  finalize(entity) {
+    this.listeners = this.listeners.filter((listener) => {
+      entity.events.process(listener.name, listener.callback);
+
+      return --listener.count;
+    });
   }
 
   queue(task) {
-    this.tasks.push(task);
+    this.listen(Trait.EVENT_TASK, task, 1);
   }
 
   collides(us, them) {}
@@ -51,6 +59,8 @@ export default class Entity {
     this.lifetime = 0;
 
     this.traits = [];
+
+    this.events = new EventBuffer();
   }
 
   addTrait(trait) {
@@ -70,7 +80,11 @@ export default class Entity {
   draw() {}
 
   finalize() {
-    this.traits.forEach((trait) => trait.finalize());
+    this.events.emit(Trait.EVENT_TASK);
+
+    this.traits.forEach((trait) => trait.finalize(this));
+
+    this.events.clear();
   }
 
   playSounds(audioBoard, audioContext) {
