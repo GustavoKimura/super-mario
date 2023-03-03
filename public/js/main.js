@@ -10,7 +10,7 @@ import { createPlayer, createPlayerEnvironment } from './player.js';
 
 const SHOW_BUTTON_CONTROLLERS = false;
 
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 
 async function main(canvas) {
   const context = canvas.getContext('2d');
