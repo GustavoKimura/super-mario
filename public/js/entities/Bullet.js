@@ -2,7 +2,7 @@ import Entity, { Sides, Trait } from '../Entity.js';
 import Killable from '../traits/Killable.js';
 import Velocity from '../traits/Velocity.js';
 import Gravity from '../traits/Gravity.js';
-import { loadSpriteSheet } from '../loaders.js';
+import { loadSpriteSheet } from '../loaders/sprite.js';
 
 export async function loadBullet() {
   const sprite = await loadSpriteSheet('bullet');

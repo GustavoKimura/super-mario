@@ -5,7 +5,7 @@ import Stomper from '../traits/Stomper.js';
 import Killable from '../traits/Killable.js';
 import Solid from '../traits/Solid.js';
 import Physics from '../traits/Physics.js';
-import { loadSpriteSheet } from '../loaders.js';
+import { loadSpriteSheet } from '../loaders/sprite.js';
 import { loadAudioBoard } from '../loaders/audio.js';
 
 const FASTER_SPEED = 1 / 5000;
