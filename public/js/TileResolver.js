@@ -35,6 +35,8 @@ export default class TileResolver {
 
       return {
         tile,
+        indexX,
+        indexY,
         x1,
         x2,
         y1,
