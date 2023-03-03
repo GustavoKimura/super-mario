@@ -154,6 +154,9 @@
           ]
         }
       ]
+    },
+    {
+      "tiles": [{ "pattern": "cannon-2h", "ranges": [[6, 11]] }]
     }
   ],
 
@@ -249,8 +252,15 @@
           "ranges": [[0, 1, 1, 3]]
         }
       ]
+    },
+    "cannon-2h": {
+      "tiles": [
+        { "name": "cannon-1", "type": "ground", "ranges": [[0, 0]] },
+        { "name": "cannon-3", "type": "ground", "ranges": [[0, 1]] }
+      ]
     }
   },
+
   "entities": [
     {
       "name": "goomba",
