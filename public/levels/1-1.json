@@ -156,7 +156,7 @@
       ]
     },
     {
-      "tiles": [{ "pattern": "cannon-2h", "ranges": [[6, 11]] }]
+      "tiles": [{ "pattern": "cannon-2h", "ranges": [[6, 7]] }]
     }
   ],
 
@@ -271,8 +271,8 @@
       "pos": [260, 0]
     },
     {
-      "name": "bullet",
-      "pos": [0, 128]
+      "name": "cannon",
+      "pos": [96, 112]
     }
   ]
 }
