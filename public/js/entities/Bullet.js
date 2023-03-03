@@ -24,9 +24,14 @@ class Behavior extends Trait {
 
     if (them.stomper) {
       if (them.vel.y > us.vel.y) {
-        us.killable.kill();
+        const KILL_TO_RIGHT = 1;
+        const KILL_TO_LEFT = -1;
 
-        us.vel.set(100, -200);
+        const killDirection = us.vel.x < 0 ? KILL_TO_LEFT : KILL_TO_RIGHT;
+
+        us.vel.set(100 * killDirection, -200);
+
+        us.killable.kill();
       } else {
         them.killable.kill();
       }
@@ -42,14 +47,15 @@ class Behavior extends Trait {
 
 function createBulletFactory(sprite) {
   function drawBullet(context) {
-    sprite.draw('bullet', context, 0, 0);
+    const flip = this.vel.x < 0;
+
+    sprite.draw('bullet', context, 0, 0, flip);
   }
 
   return function createBullet() {
     const bullet = new Entity();
 
     bullet.size.set(16, 14);
-    bullet.vel.set(80, 0);
 
     bullet.addTrait(new Killable());
     bullet.addTrait(new Behavior());
