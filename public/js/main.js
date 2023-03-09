@@ -65,8 +65,6 @@ async function main(canvas) {
   };
 
   timer.start();
-
-  level.musicController.player.playTrack('main');
 }
 
 const canvas = document.getElementById('screen');
