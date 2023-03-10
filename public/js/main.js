@@ -33,7 +33,6 @@ async function main(canvas) {
   level.entities.add(mario);
 
   const playerEnvironment = createPlayerEnvironment(mario);
-  playerEnvironment.TEST = 'SABONETE';
   level.entities.add(playerEnvironment);
 
   level.compositor.layers.push(createDashboardLayer(font, level));
