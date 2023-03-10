@@ -30,6 +30,7 @@ async function main(canvas) {
 
   const mario = createPlayer(entityFactory.mario());
   mario.player.nickname = 'MARIO';
+  level.entities.add(mario);
 
   const playerEnvironment = createPlayerEnvironment(mario);
   playerEnvironment.TEST = 'SABONETE';
