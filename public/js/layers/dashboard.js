@@ -1,11 +1,6 @@
 import { findPlayers } from '../player.js';
 
 function getPlayerTrait(level) {
-  const entities = level.entities;
-
-  console.log(entities);
-  console.log([...entities]);
-
   for (const entity of findPlayers(level)) {
     return entity.player;
   }
