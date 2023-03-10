@@ -1,13 +1,38 @@
-export function createDashboardLayer(font, playerEnvironment) {
+import { findPlayers } from '../player.js';
+
+function getPlayerTrait(level) {
+  const entities = level.entities;
+
+  console.log(entities);
+  console.log([...entities]);
+
+  for (const entity of findPlayers(level)) {
+    return entity.player;
+  }
+}
+
+function getTimerTrait(level) {
+  for (const entity of level.entities) {
+    const { levelTimer } = entity;
+
+    if (levelTimer) {
+      return levelTimer;
+    }
+  }
+}
+
+export function createDashboardLayer(font, level) {
   const LINE_1 = font.size;
   const LINE_2 = font.size * 2;
 
-  const coins = 13;
+  const playerTrait = getPlayerTrait(level);
+  const timerTrait = getTimerTrait(level);
 
   return function drawDashboard(context) {
-    const { score, time } = playerEnvironment.playerController;
+    const { nickname, score, coins } = playerTrait;
+    const { currentTime } = timerTrait;
 
-    font.print('MARIO', context, 16, LINE_1);
+    font.print(nickname, context, 16, LINE_1);
 
     font.print(score.toString().padStart(6, '0'), context, 16, LINE_2);
 
@@ -20,7 +45,7 @@ export function createDashboardLayer(font, playerEnvironment) {
     font.print('TIME', context, 208, LINE_1);
 
     font.print(
-      time.toFixed().toString().padStart(3, '0'),
+      currentTime.toFixed().toString().padStart(3, '0'),
       context,
       216,
       LINE_2

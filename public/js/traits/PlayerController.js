@@ -8,13 +8,6 @@ export default class PlayerController extends Trait {
     this.player = null;
 
     this.checkpoint = new Vec2(0, 0);
-
-    this.score = 0;
-    this.time = 300;
-
-    this.listen('stomp', () => {
-      this.score += 100;
-    });
   }
 
   setPlayer(entity) {
@@ -29,7 +22,5 @@ export default class PlayerController extends Trait {
 
       level.entities.add(this.player);
     }
-
-    this.time -= deltaTime * 2;
   }
 }

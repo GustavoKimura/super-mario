@@ -29,9 +29,13 @@ async function main(canvas) {
   const camera = new Camera();
 
   const mario = createPlayer(entityFactory.mario());
-  const playerEnvironment = createPlayerEnvironment(mario);
+  mario.player.nickname = 'MARIO';
 
+  const playerEnvironment = createPlayerEnvironment(mario);
+  playerEnvironment.TEST = 'SABONETE';
   level.entities.add(playerEnvironment);
+
+  level.compositor.layers.push(createDashboardLayer(font, level));
 
   setupKeyboard(mario);
 
@@ -43,8 +47,6 @@ async function main(canvas) {
     setupDebugLayers(level, camera);
     setupDebugControls(canvas, mario, camera);
   }
-
-  level.compositor.layers.push(createDashboardLayer(font, playerEnvironment));
 
   const gameContext = {
     audioContext,
