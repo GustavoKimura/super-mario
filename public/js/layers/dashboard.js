@@ -24,14 +24,13 @@ export function createDashboardLayer(font, level) {
   const timerTrait = getTimerTrait(level);
 
   return function drawDashboard(context) {
-    const { nickname, score, lives, coins } = playerTrait;
+    const { nickname, score, coins } = playerTrait;
     const { currentTime } = timerTrait;
 
     font.print(nickname, context, 16, LINE_1);
 
     font.print(score.toString().padStart(6, '0'), context, 16, LINE_2);
 
-    font.print(`+${lives.toString().padStart(2, '0')}`, context, 96, LINE_1);
     font.print(`@x${coins.toString().padStart(2, '0')}`, context, 96, LINE_2);
 
     font.print('WORLD', context, 152, LINE_1);
