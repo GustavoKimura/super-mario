@@ -1,4 +1,4 @@
-import { Trait, Sides } from '../Entity.js';
+import Trait from '../Trait.js';
 
 export default class Physics extends Trait {
   constructor() {

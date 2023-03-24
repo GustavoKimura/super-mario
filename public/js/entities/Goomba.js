@@ -1,4 +1,5 @@
-import Entity, { Sides, Trait } from '../Entity.js';
+import Entity from '../Entity.js';
+import Trait from '../Trait.js';
 import PendulumMove from '../traits/PendulumMove.js';
 import Killable from '../traits/Killable.js';
 import Solid from '../traits/Solid.js';

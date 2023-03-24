@@ -1,4 +1,4 @@
-import { Trait } from '../Entity.js';
+import Trait from '../Trait.js';
 
 export default class Stomper extends Trait {
   static EVENT_STOMP = Symbol('stomp');
