@@ -20,10 +20,11 @@ export function createDashboardLayer(font, level) {
   const LINE_1 = font.size;
   const LINE_2 = font.size * 2;
 
-  const playerTrait = getPlayerTrait(level);
   const timerTrait = getTimerTrait(level);
 
   return function drawDashboard(context) {
+    const playerTrait = getPlayerTrait(level);
+
     const { nickname, score, coins } = playerTrait;
     const { currentTime } = timerTrait;
 

@@ -5,8 +5,10 @@ import { loadEntities } from './entities.js';
 import { setupKeyboard, setupButtons } from './input.js';
 import { setupDebugLayers, setupDebugControls } from './debug.js';
 import { createDashboardLayer } from './layers/dashboard.js';
+import { createPlayerProgressLayer } from './layers/player-progress.js';
 import { createPlayer, createPlayerEnvironment } from './player.js';
 import SceneRunner from './SceneRunner.js';
+import CompositionScene from './CompositionScene.js';
 
 const SHOW_BUTTON_CONTROLLERS = false;
 
@@ -27,18 +29,26 @@ async function main(canvas) {
 
   const level = await loadLevel('1-2');
 
+  const dashboardLayer = createDashboardLayer(font, level);
+  const playerProgressLayer = createPlayerProgressLayer(font, level);
+
   const mario = createPlayer(entityFactory.mario());
   mario.player.nickname = 'MARIO';
   level.entities.add(mario);
 
+  const waitScreen = new CompositionScene();
+  waitScreen.compositor.layers.push(dashboardLayer);
+  waitScreen.compositor.layers.push(playerProgressLayer);
+
   const playerEnvironment = createPlayerEnvironment(mario);
   level.entities.add(playerEnvironment);
 
-  level.compositor.layers.push(createDashboardLayer(font, level));
+  level.compositor.layers.push(dashboardLayer);
 
   const inputRouter = setupKeyboard(window);
   inputRouter.addReceiver(mario);
 
+  sceneRunner.addScene(waitScreen);
   sceneRunner.addScene(level);
 
   if (SHOW_BUTTON_CONTROLLERS) {
