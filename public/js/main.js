@@ -10,7 +10,7 @@ import { createPlayerProgressLayer } from './layers/player-progress.js';
 import { createColorLayer } from './layers/color.js';
 import { createPlayer, createPlayerEnvironment } from './player.js';
 import SceneRunner from './SceneRunner.js';
-import CompositionScene from './CompositionScene.js';
+import TimedScene from './TimedScene.js';
 
 const SHOW_BUTTON_CONTROLLERS = false;
 
@@ -70,7 +70,7 @@ async function main(canvas) {
     const playerEnvironment = createPlayerEnvironment(mario);
     level.entities.add(playerEnvironment);
 
-    const waitScreen = new CompositionScene();
+    const waitScreen = new TimedScene();
     waitScreen.countDown = 2;
     waitScreen.compositor.layers.push(createColorLayer('#000'));
     waitScreen.compositor.layers.push(dashboardLayer);
