@@ -96,13 +96,17 @@ export function createLevelLoader(entityFactory) {
 
     const patterns = await loadPattern(levelSpecification.patternSheet);
 
-    return setupLevel(
+    const level = setupLevel(
       levelSpecification,
       backgroundSprites,
       entityFactory,
       musicPlayer,
       patterns
     );
+
+    level.name = name;
+
+    return level;
   };
 }
 
