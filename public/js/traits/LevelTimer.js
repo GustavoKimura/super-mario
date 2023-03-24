@@ -5,7 +5,7 @@ export default class LevelTimer extends Trait {
   static EVENT_TIMER_OK = Symbol('timerOk');
 
   constructor() {
-    super('levelTimer');
+    super();
 
     this.totalTime = 300;
     this.currentTime = this.totalTime;

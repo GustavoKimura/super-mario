@@ -9,7 +9,7 @@ import { createDashboardLayer } from './layers/dashboard.js';
 import { createPlayerProgressLayer } from './layers/player-progress.js';
 import { createColorLayer } from './layers/color.js';
 import { createTextLayer } from './layers/text.js';
-import { createPlayer, createPlayerEnvironment } from './player.js';
+import { makePlayer, createPlayerEnvironment, findPlayers } from './player.js';
 import SceneRunner from './SceneRunner.js';
 import TimedScene from './TimedScene.js';
 import Scene from './Scene.js';
@@ -31,8 +31,8 @@ async function main(canvas) {
 
   const sceneRunner = new SceneRunner();
 
-  const mario = createPlayer(entityFactory.mario());
-  mario.player.nickname = 'MARIO';
+  const mario = entityFactory.mario();
+  makePlayer(mario, 'MARIO');
 
   const inputRouter = setupKeyboard(window);
   inputRouter.addReceiver(mario);
@@ -58,12 +58,10 @@ async function main(canvas) {
       Level.EVENT_TRIGGER,
       (specification, trigger, touches) => {
         if (specification.type === 'goto') {
-          for (const entity of touches) {
-            if (entity.player) {
-              runLevel(specification.name);
+          for (const _ of findPlayers(touches)) {
+            runLevel(specification.name);
 
-              return;
-            }
+            return;
           }
         }
       }

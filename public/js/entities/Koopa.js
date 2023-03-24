@@ -4,6 +4,7 @@ import PendulumMove from '../traits/PendulumMove.js';
 import Killable from '../traits/Killable.js';
 import Solid from '../traits/Solid.js';
 import Physics from '../traits/Physics.js';
+import Stomper from '../traits/Stomper.js';
 import { loadSpriteSheet } from '../loaders/sprite.js';
 
 export async function loadKoopa() {
@@ -18,7 +19,7 @@ const STATE_PANIC = Symbol('panic');
 
 class Behavior extends Trait {
   constructor() {
-    super('behavior');
+    super();
 
     this.hideTime = 0;
     this.hideDuration = 5;
@@ -30,11 +31,11 @@ class Behavior extends Trait {
   }
 
   collides(us, them) {
-    if (us.killable.dead) {
+    if (us.traits.get(Killable).dead) {
       return;
     }
 
-    if (them.stomper) {
+    if (them.traits.has(Stomper)) {
       if (them.vel.y > us.vel.y) {
         this.handleStomp(us, them);
       } else {
@@ -47,11 +48,11 @@ class Behavior extends Trait {
     if (this.state === STATE_WALKING) {
       this.hide(us);
     } else if (this.state === STATE_HIDING) {
-      us.killable.kill();
+      us.traits.get(Killable).kill();
 
       us.vel.set(100, -200);
 
-      us.solid.obstructs = false;
+      us.traits.get(Solid).obstructs = false;
     } else if (this.state === STATE_PANIC) {
       this.hide(us);
     }
@@ -59,10 +60,10 @@ class Behavior extends Trait {
 
   hide(us) {
     us.vel.x = 0;
-    us.pendulumMove.enabled = false;
+    us.traits.get(PendulumMove).enabled = false;
 
     if (this.wakeSpeed === null) {
-      this.wakeSpeed = us.pendulumMove.speed;
+      this.wakeSpeed = us.traits.get(PendulumMove).speed;
     }
 
     this.hideTime = 0;
@@ -70,16 +71,16 @@ class Behavior extends Trait {
   }
 
   unhide(us) {
-    us.pendulumMove.enabled = true;
+    us.traits.get(PendulumMove).enabled = true;
 
-    us.pendulumMove.speed = this.wakeSpeed;
+    us.traits.get(PendulumMove).speed = this.wakeSpeed;
 
     this.state = STATE_WALKING;
   }
 
   handleNudge(us, them) {
     if (this.state === STATE_WALKING) {
-      them.killable.kill();
+      them.traits.get(Killable).kill();
     } else if (this.state === STATE_HIDING) {
       this.panic(us, them);
     } else if (this.state === STATE_PANIC) {
@@ -87,15 +88,15 @@ class Behavior extends Trait {
       const impactDirection = Math.sign(us.pos.x - them.pos.x);
 
       if (travelDirection !== 0 && travelDirection !== impactDirection) {
-        them.killable.kill();
+        them.traits.get(Killable).kill();
       }
     }
   }
 
   panic(us, them) {
-    us.pendulumMove.enabled = true;
+    us.traits.get(PendulumMove).enabled = true;
 
-    us.pendulumMove.speed = this.panicSpeed * Math.sign(them.vel.x);
+    us.traits.get(PendulumMove).speed = this.panicSpeed * Math.sign(them.vel.x);
 
     this.state = STATE_PANIC;
   }
@@ -118,15 +119,15 @@ function createKoopaFactory(sprite) {
   const wakeAnimation = sprite.animations.get('wake');
 
   function routeAnimation(koopa) {
-    if (koopa.behavior.state === STATE_HIDING) {
-      if (koopa.behavior.hideTime > 3) {
-        return wakeAnimation(koopa.behavior.hideTime);
+    if (koopa.traits.get(Behavior).state === STATE_HIDING) {
+      if (koopa.traits.get(Behavior).hideTime > 3) {
+        return wakeAnimation(koopa.traits.get(Behavior).hideTime);
       }
 
       return 'hiding';
     }
 
-    if (koopa.behavior.state === STATE_PANIC) {
+    if (koopa.traits.get(Behavior).state === STATE_PANIC) {
       return 'hiding';
     }
 

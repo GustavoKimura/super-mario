@@ -1,17 +1,17 @@
 import { findPlayers } from '../player.js';
+import Player from '../traits/Player.js';
+import LevelTimer from '../traits/LevelTimer.js';
 
 function getPlayerTrait(level) {
-  for (const entity of findPlayers(level)) {
-    return entity.player;
+  for (const entity of findPlayers(level.entities)) {
+    return entity.traits.get(Player);
   }
 }
 
 function getTimerTrait(level) {
   for (const entity of level.entities) {
-    const { levelTimer } = entity;
-
-    if (levelTimer) {
-      return levelTimer;
+    if (entity.traits.has(LevelTimer)) {
+      return entity.traits.get(LevelTimer);
     }
   }
 }

@@ -74,10 +74,9 @@ function setupTriggers(levelSpecification, level) {
   }
 
   for (const triggerSpecification of levelSpecification.triggers) {
-    const entity = new Entity();
-    entity.addTrait(new Trigger());
+    const trigger = new Trigger();
 
-    entity.trigger.conditions.push((entity, touches, gameContext, level) => {
+    trigger.conditions.push((entity, touches, gameContext, level) => {
       level.events.emit(
         Level.EVENT_TRIGGER,
         triggerSpecification,
@@ -85,6 +84,9 @@ function setupTriggers(levelSpecification, level) {
         touches
       );
     });
+
+    const entity = new Entity();
+    entity.addTrait(trigger);
 
     entity.size.set(64, 64);
     entity.pos.set(triggerSpecification.pos[0], triggerSpecification.pos[1]);

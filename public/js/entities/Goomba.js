@@ -4,6 +4,7 @@ import PendulumMove from '../traits/PendulumMove.js';
 import Killable from '../traits/Killable.js';
 import Solid from '../traits/Solid.js';
 import Physics from '../traits/Physics.js';
+import Stomper from '../traits/Stomper.js';
 import { loadSpriteSheet } from '../loaders/sprite.js';
 
 export async function loadGoomba() {
@@ -13,22 +14,18 @@ export async function loadGoomba() {
 }
 
 class Behavior extends Trait {
-  constructor() {
-    super('behavior');
-  }
-
   collides(us, them) {
-    if (us.killable.dead) {
+    if (us.traits.get(Killable).dead) {
       return;
     }
 
-    if (them.stomper) {
+    if (them.traits.has(Stomper)) {
       if (them.vel.y > us.vel.y) {
-        us.killable.kill();
+        us.traits.get(Killable).kill();
 
-        us.pendulumMove.speed = 0;
+        us.traits.get(PendulumMove).speed = 0;
       } else {
-        them.killable.kill();
+        them.traits.get(Killable).kill();
       }
     }
   }
@@ -38,7 +35,7 @@ function createGoombaFactory(sprite) {
   const walkAnimation = sprite.animations.get('walk');
 
   function routeAnimation(goomba) {
-    if (goomba.killable.dead) {
+    if (goomba.traits.get(Killable).dead) {
       return 'flat';
     }
 

@@ -1,6 +1,8 @@
 import KeyboardState from './KeyboardState.js';
 import ButtonsState from './ButtonsState.js';
 import InputRouter from './InputRouter.js';
+import Jump from './traits/Jump.js';
+import Go from './traits/Go.js';
 
 const DIRECTION_INCREASE = 1;
 const DIRECTION_DECREASE = -1;
@@ -8,20 +10,20 @@ const DIRECTION_DECREASE = -1;
 function goToLeft(router, keyState) {
   const directionBalance = keyState ? DIRECTION_DECREASE : DIRECTION_INCREASE;
 
-  router.route((entity) => (entity.go.dir += directionBalance));
+  router.route((entity) => (entity.traits.get(Go).dir += directionBalance));
 }
 
 function goToRight(router, keyState) {
   const directionBalance = keyState ? DIRECTION_INCREASE : DIRECTION_DECREASE;
 
-  router.route((entity) => (entity.go.dir += directionBalance));
+  router.route((entity) => (entity.traits.get(Go).dir += directionBalance));
 }
 
 function controlJump(router, keyState) {
   if (keyState) {
-    router.route((entity) => entity.jump.start());
+    router.route((entity) => entity.traits.get(Jump).start());
   } else {
-    router.route((entity) => entity.jump.cancel());
+    router.route((entity) => entity.traits.get(Jump).cancel());
   }
 }
 

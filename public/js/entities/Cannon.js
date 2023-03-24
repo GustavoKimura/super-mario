@@ -18,7 +18,7 @@ function createCannonFactory(audioBoard) {
 
     let direction = RIGHT_DIRECTION;
 
-    for (const player of findPlayers(level)) {
+    for (const player of findPlayers(level.entities)) {
       if (
         player.pos.x > cannon.pos.x - HOLD_FIRE_THRESHOLD &&
         player.pos.x < cannon.pos.x + HOLD_FIRE_THRESHOLD

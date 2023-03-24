@@ -25,15 +25,13 @@ export default class Entity {
 
     this.lifetime = 0;
 
-    this.traits = [];
+    this.traits = new Map();
 
     this.events = new EventBuffer();
   }
 
   addTrait(trait) {
-    this.traits.push(trait);
-
-    this[trait.name] = trait;
+    this.traits.set(trait.constructor, trait);
   }
 
   collides(candidate) {
