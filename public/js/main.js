@@ -1,4 +1,3 @@
-import Camera from './Camera.js';
 import Timer from './Timer.js';
 import { createLevelLoader } from './loaders/level.js';
 import { loadFont } from './loaders/font.js';
@@ -13,8 +12,7 @@ const SHOW_BUTTON_CONTROLLERS = false;
 const DEBUG_MODE = true;
 
 async function main(canvas) {
-  const context = canvas.getContext('2d');
-
+  const videoContext = canvas.getContext('2d');
   const audioContext = new AudioContext();
 
   const [entityFactory, font] = await Promise.all([
@@ -25,8 +23,6 @@ async function main(canvas) {
   const loadLevel = createLevelLoader(entityFactory);
 
   const level = await loadLevel('1-2');
-
-  const camera = new Camera();
 
   const mario = createPlayer(entityFactory.mario());
   mario.player.nickname = 'MARIO';
@@ -44,12 +40,13 @@ async function main(canvas) {
   }
 
   if (DEBUG_MODE) {
-    setupDebugLayers(level, camera);
-    setupDebugControls(canvas, mario, camera);
+    setupDebugLayers(level);
+    setupDebugControls(canvas, mario, level.camera);
   }
 
   const gameContext = {
     audioContext,
+    videoContext,
     entityFactory,
     deltaTime: null,
   };
@@ -60,10 +57,7 @@ async function main(canvas) {
     gameContext.deltaTime = deltaTime;
 
     level.update(gameContext);
-
-    camera.pos.x = Math.max(0, mario.pos.x - 100);
-
-    level.compositor.draw(context, camera);
+    level.draw(gameContext);
   };
 
   timer.start();
