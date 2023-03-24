@@ -22,7 +22,7 @@ async function main(canvas) {
 
   const loadLevel = createLevelLoader(entityFactory);
 
-  const level = await loadLevel('1-2');
+  const level = await loadLevel('debug-coin');
 
   const mario = createPlayer(entityFactory.mario());
   mario.player.nickname = 'MARIO';
