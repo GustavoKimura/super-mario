@@ -1,6 +1,7 @@
 import Level from '../Level.js';
 import Entity from '../Entity.js';
 import LevelTimer from '../traits/LevelTimer.js';
+import Trigger from '../traits/Trigger.js';
 import { Matrix } from '../math.js';
 import { createSpriteLayer } from '../layers/sprites.js';
 import { createBackgroundLayer } from '../layers/background.js';
@@ -67,6 +68,31 @@ function setupBehavior(level) {
   );
 }
 
+function setupTriggers(levelSpecification, level) {
+  if (!levelSpecification.triggers) {
+    return;
+  }
+
+  for (const triggerSpecification of levelSpecification.triggers) {
+    const entity = new Entity();
+    entity.addTrait(new Trigger());
+
+    entity.trigger.conditions.push((entity, touches, gameContext, level) => {
+      level.events.emit(
+        Level.EVENT_TRIGGER,
+        triggerSpecification,
+        entity,
+        touches
+      );
+    });
+
+    entity.size.set(64, 64);
+    entity.pos.set(triggerSpecification.pos[0], triggerSpecification.pos[1]);
+
+    level.entities.add(entity);
+  }
+}
+
 function setupLevel(
   levelSpecification,
   backgroundSprites,
@@ -80,6 +106,7 @@ function setupLevel(
   setupEntities(levelSpecification, level, entityFactory);
   setupMusic(level, musicPlayer);
   setupBehavior(level);
+  setupTriggers(levelSpecification, level);
 
   return level;
 }

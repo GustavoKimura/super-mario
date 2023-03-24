@@ -1,9 +1,7 @@
 import Camera from './Camera.js';
-import Compositor from './Compositor.js';
 import TileCollider from './TileCollider.js';
 import EntityCollider from './EntityCollider.js';
 import MusicController from './MusicController.js';
-import EventEmitter from './EventEmitter.js';
 import Scene from './Scene.js';
 import { findPlayers } from './player.js';
 
@@ -14,6 +12,8 @@ function focusPlayer(level) {
 }
 
 export default class Level extends Scene {
+  static EVENT_TRIGGER = Symbol('trigger');
+
   constructor() {
     super();
 

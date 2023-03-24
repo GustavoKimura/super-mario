@@ -1,3 +1,4 @@
+import Level from './Level.js';
 import Timer from './Timer.js';
 import { createLevelLoader } from './loaders/level.js';
 import { loadFont } from './loaders/font.js';
@@ -13,7 +14,7 @@ import CompositionScene from './CompositionScene.js';
 
 const SHOW_BUTTON_CONTROLLERS = false;
 
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 
 async function main(canvas) {
   const videoContext = canvas.getContext('2d');
@@ -41,6 +42,21 @@ async function main(canvas) {
   async function runLevel(name) {
     const level = await loadLevel(name);
 
+    level.events.listen(
+      Level.EVENT_TRIGGER,
+      (specification, trigger, touches) => {
+        if (specification.type === 'goto') {
+          for (const entity of touches) {
+            if (entity.player) {
+              runLevel(specification.name);
+
+              return;
+            }
+          }
+        }
+      }
+    );
+
     if (DEBUG_MODE) {
       setupDebugLayers(level);
       setupDebugControls(canvas, mario, level.camera);
@@ -49,11 +65,13 @@ async function main(canvas) {
     const dashboardLayer = createDashboardLayer(font, level);
     const playerProgressLayer = createPlayerProgressLayer(font, level);
 
+    mario.pos.set(0, 0);
     level.entities.add(mario);
     const playerEnvironment = createPlayerEnvironment(mario);
     level.entities.add(playerEnvironment);
 
     const waitScreen = new CompositionScene();
+    waitScreen.countDown = 2;
     waitScreen.compositor.layers.push(createColorLayer('#000'));
     waitScreen.compositor.layers.push(dashboardLayer);
     waitScreen.compositor.layers.push(playerProgressLayer);
@@ -83,7 +101,7 @@ async function main(canvas) {
 
   timer.start();
 
-  window.runLevel = runLevel;
+  runLevel('debug-progression');
 }
 
 const canvas = document.getElementById('screen');
