@@ -8,9 +8,11 @@ import { setupDebugLayers, setupDebugControls } from './debug.js';
 import { createDashboardLayer } from './layers/dashboard.js';
 import { createPlayerProgressLayer } from './layers/player-progress.js';
 import { createColorLayer } from './layers/color.js';
+import { createTextLayer } from './layers/text.js';
 import { createPlayer, createPlayerEnvironment } from './player.js';
 import SceneRunner from './SceneRunner.js';
 import TimedScene from './TimedScene.js';
+import Scene from './Scene.js';
 
 const SHOW_BUTTON_CONTROLLERS = false;
 
@@ -40,6 +42,16 @@ async function main(canvas) {
   }
 
   async function runLevel(name) {
+    const loadScreen = new Scene();
+    loadScreen.compositor.layers.push(createColorLayer('#000'));
+
+    loadScreen.compositor.layers.push(
+      createTextLayer(font, `Loading ${name}...`)
+    );
+
+    sceneRunner.addScene(loadScreen);
+    sceneRunner.runNext();
+
     const level = await loadLevel(name);
 
     level.events.listen(
