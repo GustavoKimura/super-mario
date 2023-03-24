@@ -5,14 +5,14 @@ import { loadAudioBoard } from '../loaders/audio.js';
 
 const HOLD_FIRE_THRESHOLD = 30;
 
-export async function loadCannon(audioContext, entityFactories) {
+export async function loadCannon(audioContext) {
   const audioBoard = await loadAudioBoard('cannon', audioContext);
 
-  return createCannonFactory(audioBoard, entityFactories);
+  return createCannonFactory(audioBoard);
 }
 
-function createCannonFactory(audioBoard, entityFactories) {
-  function emitBullet(cannon, level) {
+function createCannonFactory(audioBoard) {
+  function emitBullet(cannon, gameContext, level) {
     const RIGHT_DIRECTION = 1;
     const LEFT_DIRECTION = -1;
 
@@ -31,7 +31,7 @@ function createCannonFactory(audioBoard, entityFactories) {
       }
     }
 
-    const bullet = entityFactories.bullet();
+    const bullet = gameContext.entityFactory.bullet();
 
     bullet.pos.copy(cannon.pos);
     bullet.vel.set(80 * direction, 0);
