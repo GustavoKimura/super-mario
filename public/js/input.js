@@ -1,56 +1,64 @@
 import KeyboardState from './KeyboardState.js';
 import ButtonsState from './ButtonsState.js';
+import InputRouter from './InputRouter.js';
 
 const DIRECTION_INCREASE = 1;
 const DIRECTION_DECREASE = -1;
 
-function goToLeft(mario, keyState) {
+function goToLeft(router, keyState) {
   const directionBalance = keyState ? DIRECTION_DECREASE : DIRECTION_INCREASE;
 
-  mario.go.dir += directionBalance;
+  router.route((entity) => (entity.go.dir += directionBalance));
 }
 
-function goToRight(mario, keyState) {
+function goToRight(router, keyState) {
   const directionBalance = keyState ? DIRECTION_INCREASE : DIRECTION_DECREASE;
 
-  mario.go.dir += directionBalance;
+  router.route((entity) => (entity.go.dir += directionBalance));
 }
 
-function controlJump(mario, keyState) {
+function controlJump(router, keyState) {
   if (keyState) {
-    mario.jump.start();
+    router.route((entity) => entity.jump.start());
   } else {
-    mario.jump.cancel();
+    router.route((entity) => entity.jump.cancel());
   }
 }
 
-function mapControls(mario, input, controls) {
+function mapControls(router, input, controls) {
   const { LEFT, RIGHT, RUN, JUMP } = controls;
 
-  input.addMapping(LEFT, (keyState) => goToLeft(mario, keyState));
-  input.addMapping(RIGHT, (keyState) => goToRight(mario, keyState));
-  input.addMapping(RUN, (keyState) => mario.turbo(keyState));
-  input.addMapping(JUMP, (keyState) => controlJump(mario, keyState));
+  input.addMapping(LEFT, (keyState) => goToLeft(router, keyState));
+  input.addMapping(RIGHT, (keyState) => goToRight(router, keyState));
+
+  input.addMapping(RUN, (keyState) =>
+    router.route((entity) => entity.turbo(keyState))
+  );
+
+  input.addMapping(JUMP, (keyState) => controlJump(router, keyState));
 
   return input;
 }
 
-export function setupKeyboard(mario) {
+export function setupKeyboard(window) {
   const LEFT_KEY = 'KeyA';
   const RIGHT_KEY = 'KeyD';
   const RUN_KEY = 'KeyZ';
   const JUMP_KEY = 'KeyW';
 
   const input = new KeyboardState();
+  const router = new InputRouter();
 
-  mapControls(mario, input, {
+  input.listenTo(window);
+
+  mapControls(router, input, {
     LEFT: LEFT_KEY,
     RIGHT: RIGHT_KEY,
     RUN: RUN_KEY,
     JUMP: JUMP_KEY,
   });
 
-  input.listenTo(window);
+  return router;
 }
 
 export function setupButtons(mario) {

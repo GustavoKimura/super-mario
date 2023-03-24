@@ -22,7 +22,7 @@ async function main(canvas) {
 
   const loadLevel = createLevelLoader(entityFactory);
 
-  const level = await loadLevel('debug-coin');
+  const level = await loadLevel('1-2');
 
   const mario = createPlayer(entityFactory.mario());
   mario.player.nickname = 'MARIO';
@@ -33,7 +33,8 @@ async function main(canvas) {
 
   level.compositor.layers.push(createDashboardLayer(font, level));
 
-  setupKeyboard(mario);
+  const inputRouter = setupKeyboard(window);
+  inputRouter.addReceiver(mario);
 
   if (SHOW_BUTTON_CONTROLLERS) {
     setupButtons(mario);
