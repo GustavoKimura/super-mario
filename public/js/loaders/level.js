@@ -8,9 +8,18 @@ import { loadJSON } from '../loaders.js';
 import { loadMusicSheet } from './music.js';
 import { loadSpriteSheet } from './sprite.js';
 
-function setupBackgrounds(levelSpecification, level, backgroundSprites) {
+async function loadPattern(name) {
+  return await loadJSON(`./sprites/patterns/${name}.json`);
+}
+
+function setupBackgrounds(
+  levelSpecification,
+  level,
+  backgroundSprites,
+  patterns
+) {
   levelSpecification.layers.forEach((layer) => {
-    const grid = createGrid(layer.tiles, levelSpecification.patterns);
+    const grid = createGrid(layer.tiles, patterns);
 
     const backgroundLayer = createBackgroundLayer(
       level,
@@ -62,11 +71,12 @@ function setupLevel(
   levelSpecification,
   backgroundSprites,
   entityFactory,
-  musicPlayer
+  musicPlayer,
+  patterns
 ) {
   const level = new Level();
 
-  setupBackgrounds(levelSpecification, level, backgroundSprites);
+  setupBackgrounds(levelSpecification, level, backgroundSprites, patterns);
   setupEntities(levelSpecification, level, entityFactory);
   setupMusic(level, musicPlayer);
   setupBehavior(level);
@@ -84,11 +94,14 @@ export function createLevelLoader(entityFactory) {
 
     const musicPlayer = await loadMusicSheet(levelSpecification.musicSheet);
 
+    const patterns = await loadPattern(levelSpecification.patternSheet);
+
     return setupLevel(
       levelSpecification,
       backgroundSprites,
       entityFactory,
-      musicPlayer
+      musicPlayer,
+      patterns
     );
   };
 }
