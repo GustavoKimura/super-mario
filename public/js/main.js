@@ -6,6 +6,7 @@ import { setupKeyboard, setupButtons } from './input.js';
 import { setupDebugLayers, setupDebugControls } from './debug.js';
 import { createDashboardLayer } from './layers/dashboard.js';
 import { createPlayer, createPlayerEnvironment } from './player.js';
+import SceneRunner from './SceneRunner.js';
 
 const SHOW_BUTTON_CONTROLLERS = false;
 
@@ -22,6 +23,8 @@ async function main(canvas) {
 
   const loadLevel = createLevelLoader(entityFactory);
 
+  const sceneRunner = new SceneRunner();
+
   const level = await loadLevel('1-2');
 
   const mario = createPlayer(entityFactory.mario());
@@ -35,6 +38,8 @@ async function main(canvas) {
 
   const inputRouter = setupKeyboard(window);
   inputRouter.addReceiver(mario);
+
+  sceneRunner.addScene(level);
 
   if (SHOW_BUTTON_CONTROLLERS) {
     setupButtons(mario);
@@ -57,11 +62,12 @@ async function main(canvas) {
   timer.update = function update(deltaTime) {
     gameContext.deltaTime = deltaTime;
 
-    level.update(gameContext);
-    level.draw(gameContext);
+    sceneRunner.update(gameContext);
   };
 
   timer.start();
+
+  sceneRunner.runNext();
 }
 
 const canvas = document.getElementById('screen');
