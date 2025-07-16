@@ -6,7 +6,7 @@
 
 ### **🛠️ Project Aspects 🛠️**
 
-Project running on GitHub pages (**you must click on the black screen to play the game**):
+Project running on GitHub pages (**you must click on the black screen to load, and to play the game**):
 
 https://gustavokimura.github.io/super-mario/public/
 
